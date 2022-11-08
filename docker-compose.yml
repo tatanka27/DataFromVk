@@ -5,9 +5,18 @@ services:
     environment:
       POSTGRES_DB: "data_from_vk"
       POSTGRES_USER: "user"
-      POSTGRES_PASSWORD: "user1"
+      POSTGRES_PASSWORD: "user"
       PGDATA: "/var/lib/postgresql/data/pgdata"
     volumes:
       - .:/var/lib/postgresql/data
     ports:
       - "5432:5432"
+
+  postgres-test:
+    image: postgres:13.3
+    environment:
+      POSTGRES_DB: "data_from_vk_test"
+      POSTGRES_USER: "user"
+      POSTGRES_PASSWORD: "user"
+    ports:
+      - "5433:5432"

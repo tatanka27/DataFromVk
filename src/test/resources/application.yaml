@@ -1,0 +1,16 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5433/data_from_vk_test
+    username: user
+    password: user
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    database: postgresql
+    database-platform: org.hibernate.dialect.PostgreSQL10Dialect
+  security:
+    jwt-secret: test
+    jwt-issuer: vk.com
+
+app:
+  vk_url: https://api.vk.com
+  vk_v: 5.131

@@ -1,7 +1,10 @@
 package com.example.datafromvk.controller;
 
+import com.example.datafromvk.exception.ConflictDataException;
 import com.example.datafromvk.exception.VkException;
 import com.example.datafromvk.model.response.ErrorResponse;
+import com.example.datafromvk.model.response.validation.ValidationErrorResponse;
+import com.example.datafromvk.model.response.validation.Violation;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -12,40 +15,31 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.net.UnknownHostException;
-import java.sql.SQLException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @ResponseBody
 @ControllerAdvice
 public class ErrorHandlingAdvice {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleValidationException(Exception ex) {
-        return new ErrorResponse(HttpStatus.BAD_REQUEST, "validation failed");
+    public ValidationErrorResponse handleMethodArgumentNotValid(MethodArgumentNotValidException ex) {
+        final List<Violation> violations = ex.getBindingResult().getFieldErrors().stream()
+                .map(error -> new Violation(error.getField(), error.getDefaultMessage()))
+                .collect(Collectors.toList());
+        return new ValidationErrorResponse(violations);
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleHttpMessageNotReadable(Exception ex) {
-        return new ErrorResponse(HttpStatus.BAD_REQUEST, ex.getCause().getMessage());
+        return new ErrorResponse(HttpStatus.BAD_REQUEST, "json is wrong");
     }
 
     @ExceptionHandler(MissingRequestHeaderException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleMissingRequestHeader(Exception ex) {
         return new ErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
-    }
-
-    @ExceptionHandler({IllegalArgumentException.class})
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleBadRequestException(Exception ex) {
-        return new ErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
-    }
-
-    @ExceptionHandler(SQLException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-
-    public ErrorResponse handleDataBaseException(Exception ex) {
-        return new ErrorResponse(HttpStatus.BAD_REQUEST, ex.getCause().getMessage());
     }
 
     @ExceptionHandler(UnknownHostException.class)
@@ -58,5 +52,11 @@ public class ErrorHandlingAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleVkException(Exception ex) {
         return new ErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
+    }
+
+    @ExceptionHandler(ConflictDataException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public ErrorResponse handleConflictData(Exception ex) {
+        return new ErrorResponse(HttpStatus.CONFLICT, ex.getMessage());
     }
 }

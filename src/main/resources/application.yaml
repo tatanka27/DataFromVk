@@ -2,7 +2,7 @@ spring:
     datasource:
         url: jdbc:postgresql://localhost:5432/data_from_vk
         username: user
-        password: user1
+        password: user
         driver-class-name: org.postgresql.Driver
     jpa:
         database: postgresql

@@ -1,11 +1,13 @@
 package com.example.datafromvk.service;
 
+import com.example.datafromvk.exception.ConflictDataException;
 import com.example.datafromvk.model.Role;
 import com.example.datafromvk.model.User;
 import com.example.datafromvk.model.enumerated.RoleName;
 import com.example.datafromvk.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -28,6 +30,12 @@ public class UserService {
 
     public User create(String username, String password, Set<Role> roles) {
         User user = new User(username, passwordEncoder.encode(password), roles);
+        try {
+
+        } catch (DataIntegrityViolationException exception) {
+            throw new ConflictDataException("You cannot use " + username);
+        }
+
         return userRepository.save(user);
     }
 }
