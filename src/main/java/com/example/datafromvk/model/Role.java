@@ -6,9 +6,9 @@ import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 
 @Entity
-@NoArgsConstructor
 @Getter
 @Setter
+@NoArgsConstructor
 @ToString
 @Table(name = "role", schema = "public")
 public class Role {

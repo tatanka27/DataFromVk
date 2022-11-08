@@ -1,6 +1,6 @@
 package com.example.datafromvk.model.enumerated;
 
-public enum Role {
+public enum RoleName {
     ADMIN,
     USER
 }

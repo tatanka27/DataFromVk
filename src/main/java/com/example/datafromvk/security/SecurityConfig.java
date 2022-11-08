@@ -1,6 +1,6 @@
 package com.example.datafromvk.security;
 
-import com.example.datafromvk.model.enumerated.Role;
+import com.example.datafromvk.model.enumerated.RoleName;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,10 +36,9 @@ public class SecurityConfig {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
-                .antMatchers("/users").hasAuthority(Role.ADMIN.name())
                 .antMatchers("/user/registration").permitAll()
                 .antMatchers("/login").permitAll()
-                .antMatchers("/api/v3/api-docs").permitAll()
+                .antMatchers("/api/v3/api-docs").hasAuthority(RoleName.ADMIN.name())
                 .anyRequest().authenticated()
                 .and()
                 .httpBasic();

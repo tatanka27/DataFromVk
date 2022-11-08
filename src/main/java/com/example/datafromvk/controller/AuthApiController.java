@@ -1,8 +1,8 @@
 package com.example.datafromvk.controller;
 
 import com.example.datafromvk.model.request.LoginRequest;
+import com.example.datafromvk.model.response.LoginResponse;
 import com.example.datafromvk.security.JwtTokenUtil;
-import com.example.datafromvk.security.AuthUserDetailsService;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,12 +27,13 @@ public class AuthApiController {
     @PostMapping("/login")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "login")
-    public String login(@Valid @RequestBody LoginRequest loginRequest) {
+    public LoginResponse login(@Valid @RequestBody LoginRequest loginRequest) {
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginRequest.getUsername(),
                         loginRequest.getPassword()));
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        return jwtTokenUtil.generateToken(authentication);
+
+        return new LoginResponse(jwtTokenUtil.generateToken(authentication));
     }
 }

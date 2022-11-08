@@ -14,3 +14,7 @@ spring:
 springdoc:
     api-docs:
         path: /api/v3/api-docs
+
+app:
+    vk_url: https://api.vk.com
+    vk_v: 5.131
