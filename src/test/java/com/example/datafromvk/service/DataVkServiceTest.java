@@ -1,6 +1,7 @@
 package com.example.datafromvk.service;
 
-import com.example.datafromvk.exception.VkException;
+import com.example.datafromvk.exception.BadVkServiceTokenException;
+import com.example.datafromvk.exception.NotFoundUserVkException;
 import com.example.datafromvk.model.dto.UserVk;
 import com.example.datafromvk.model.response.DataUserVkResponse;
 import org.junit.jupiter.api.Assertions;
@@ -51,42 +52,28 @@ public class DataVkServiceTest {
     }
 
     @Test
-    void shouldThrow_ifProblemWithGet() {
+    void shouldThrow_ifBadToken() {
 
-        when(vkService.getFio(anyString(), anyString())).thenThrow(new VkException("Problem with response from users.get()"));
+        when(vkService.getFio(anyString(), anyString())).thenThrow(new BadVkServiceTokenException("Bad vk_service_token"));
 
-        VkException thrown = assertThrows(
-                VkException.class,
+        BadVkServiceTokenException thrown = assertThrows(
+                BadVkServiceTokenException.class,
                 () -> dataVkService.getDataUserVk(tokenTest, userIdTest, groupIdTest)
         );
 
-        assertTrue(thrown.getMessage().contains("Problem with response from users.get()"));
+        assertTrue(thrown.getMessage().contains("Bad vk_service_token"));
     }
 
     @Test
     void shouldThrow_ifUserNotFound() {
 
-        when(vkService.getFio(anyString(), anyString())).thenThrow(new VkException(String.format("User with id=%s not found", userIdTest)));
+        when(vkService.getFio(anyString(), anyString())).thenThrow(new NotFoundUserVkException(String.format("User with id=%s not found", userIdTest)));
 
-        VkException thrown = assertThrows(
-                VkException.class,
+        NotFoundUserVkException thrown = assertThrows(
+                NotFoundUserVkException.class,
                 () -> dataVkService.getDataUserVk(tokenTest, userIdTest, groupIdTest)
         );
 
         assertTrue(thrown.getMessage().contains(String.format("User with id=%s not found", userIdTest)));
-    }
-
-    @Test
-    void shouldThrow_ifProblemWithIsMember() {
-
-        when(vkService.getFio(anyString(), anyString())).thenReturn(userVk);
-        when(vkService.isGroupMember(anyString(), anyInt(), anyString())).thenThrow(new VkException("Problem with response from groups.isMember()"));
-
-        VkException thrown = assertThrows(
-                VkException.class,
-                () -> dataVkService.getDataUserVk(tokenTest, userIdTest, groupIdTest)
-        );
-
-        assertTrue(thrown.getMessage().contains("Problem with response from groups.isMember()"));
     }
 }

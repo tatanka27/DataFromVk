@@ -1,6 +1,7 @@
 package com.example.datafromvk.service;
 
-import com.example.datafromvk.exception.VkException;
+import com.example.datafromvk.exception.BadVkServiceTokenException;
+import com.example.datafromvk.exception.NotFoundUserVkException;
 import com.example.datafromvk.model.dto.GroupVkResponse;
 import com.example.datafromvk.model.dto.UserVk;
 import com.example.datafromvk.model.dto.UserVkResponse;
@@ -26,10 +27,10 @@ public class VkService {
                 .block();
 
         if (response == null || response.getResponse() == null) {
-            throw new VkException("Problem with response from users.get()");
+            throw new BadVkServiceTokenException("Bad vk_service_token");
         }
         if (response.getResponse().isEmpty()) {
-            throw new VkException(String.format("User with id=%s not found", userId));
+            throw new NotFoundUserVkException(String.format("User with id=%s not found", userId));
         }
 
         return response.getResponse().get(0);
@@ -43,7 +44,7 @@ public class VkService {
                 .bodyToMono(GroupVkResponse.class)
                 .block();
         if (response == null) {
-            throw new VkException("Problem with response from groups.isMember()");
+            throw new BadVkServiceTokenException("Bad vk_service_token");
         }
 
         return response.getResponse() == 1;

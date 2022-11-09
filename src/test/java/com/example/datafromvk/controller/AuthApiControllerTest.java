@@ -59,7 +59,7 @@ public class AuthApiControllerTest {
             "{\"\", \"\"}",
             "{}"
     })
-    void shouldReturnBadRequest_authPost(String loginJson) throws Exception {
+    void shouldReturnBadRequest_login(String loginJson) throws Exception {
         login(loginJson, 400);
     }
 
@@ -67,6 +67,6 @@ public class AuthApiControllerTest {
         mockMvc.perform(post("/login")
                         .content(json)
                         .header("Content-Type", "application/json"))
-                .andExpect(status().is(expectedCode)).andReturn();
+                .andExpect(status().is(expectedCode));
     }
 }

@@ -31,11 +31,10 @@ public class UserService {
     public User create(String username, String password, Set<Role> roles) {
         User user = new User(username, passwordEncoder.encode(password), roles);
         try {
-
+            return userRepository.save(user);
         } catch (DataIntegrityViolationException exception) {
             throw new ConflictDataException("You cannot use " + username);
         }
 
-        return userRepository.save(user);
     }
 }

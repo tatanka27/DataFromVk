@@ -1,7 +1,8 @@
 package com.example.datafromvk.controller;
 
+import com.example.datafromvk.exception.BadVkServiceTokenException;
 import com.example.datafromvk.exception.ConflictDataException;
-import com.example.datafromvk.exception.VkException;
+import com.example.datafromvk.exception.NotFoundUserVkException;
 import com.example.datafromvk.model.response.ErrorResponse;
 import com.example.datafromvk.model.response.validation.ValidationErrorResponse;
 import com.example.datafromvk.model.response.validation.Violation;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.reactive.function.client.WebClientException;
 
 import java.net.UnknownHostException;
 import java.util.List;
@@ -36,22 +38,22 @@ public class ErrorHandlingAdvice {
         return new ErrorResponse(HttpStatus.BAD_REQUEST, "json is wrong");
     }
 
-    @ExceptionHandler(MissingRequestHeaderException.class)
+    @ExceptionHandler({MissingRequestHeaderException.class, BadVkServiceTokenException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleMissingRequestHeader(Exception ex) {
+    public ErrorResponse handleBadRequest(Exception ex) {
         return new ErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 
-    @ExceptionHandler(UnknownHostException.class)
+    @ExceptionHandler({WebClientException.class, UnknownHostException.class})
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public ErrorResponse handleUnknownHost(Exception ex) {
+    public ErrorResponse handleInternalError(Exception ex) {
         return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
     }
 
-    @ExceptionHandler(VkException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public ErrorResponse handleVkException(Exception ex) {
-        return new ErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
+    @ExceptionHandler(NotFoundUserVkException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    public ErrorResponse handleNotFound(Exception ex) {
+        return new ErrorResponse(HttpStatus.NOT_FOUND, ex.getMessage());
     }
 
     @ExceptionHandler(ConflictDataException.class)
