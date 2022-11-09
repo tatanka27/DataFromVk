@@ -23,6 +23,6 @@ public class DataVkController {
     @Operation(summary = "get by user_id and group_id data from vk")
     public DataUserVkResponse getDataUserVk(@RequestHeader(name = "vk_service_token") String vkServiceToken,
                                             @Valid @RequestBody UserVkRequest request) {
-        return dataVkService.dataUserVk(vkServiceToken, request.getUserId(), request.getGroupId());
+        return dataVkService.getDataUserVk(vkServiceToken, request.getUserId(), request.getGroupId());
     }
 }
