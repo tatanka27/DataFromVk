@@ -18,7 +18,7 @@ import javax.validation.Valid;
 public class UserController {
     private UserService userService;
 
-    @PostMapping("/user/registration")
+    @PostMapping(path = "/user/registration", produces="application/json")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "registration new user")
     public void create(@Valid @RequestBody RegisterRequest registerRequest) {

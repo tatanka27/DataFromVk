@@ -43,7 +43,7 @@ public class DataVkControllerTest {
     @Test
     void shouldReturnOk_getData() throws Exception {
         mockMvc.perform(get("/user_vk")
-                        .content(String.format(userVkJson, "tanka_tatanka", "group"))
+                        .content(String.format(userVkJson, "tanka_tatanka", "1"))
                         .header("Content-Type", "application/json")
                         .header("vk_service_token", vkServiceToken)
                         .header("Authorization", "Bearer " + jwtToken))
@@ -66,7 +66,7 @@ public class DataVkControllerTest {
     @Test
     void shouldReturnBadRequest_missingToken_getData() throws Exception {
         mockMvc.perform(get("/user_vk")
-                        .content(String.format(userVkJson, "user", "group"))
+                        .content(String.format(userVkJson, "user", "1"))
                         .header("Content-Type", "application/json")
                         .header("Authorization", "Bearer " + jwtToken))
                 .andExpect(status().is(400));
@@ -75,7 +75,7 @@ public class DataVkControllerTest {
     @Test
     void shouldReturnUnauthorized_getData() throws Exception {
         mockMvc.perform(get("/user_vk")
-                        .content(String.format(userVkJson, "user", "group"))
+                        .content(String.format(userVkJson, "user", "1"))
                         .header("Content-Type", "application/json")
                         .header("vk_service_token", vkServiceToken))
                 .andExpect(status().is(401));

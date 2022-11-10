@@ -1,8 +1,7 @@
 package com.example.datafromvk.controller;
 
-import com.example.datafromvk.exception.BadVkServiceTokenException;
 import com.example.datafromvk.exception.ConflictDataException;
-import com.example.datafromvk.exception.NotFoundUserVkException;
+import com.example.datafromvk.exception.VkException;
 import com.example.datafromvk.model.response.ErrorResponse;
 import com.example.datafromvk.model.response.validation.ValidationErrorResponse;
 import com.example.datafromvk.model.response.validation.Violation;
@@ -38,7 +37,7 @@ public class ErrorHandlingAdvice {
         return new ErrorResponse(HttpStatus.BAD_REQUEST, "json is wrong");
     }
 
-    @ExceptionHandler({MissingRequestHeaderException.class, BadVkServiceTokenException.class})
+    @ExceptionHandler(MissingRequestHeaderException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleBadRequest(Exception ex) {
         return new ErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
@@ -50,10 +49,10 @@ public class ErrorHandlingAdvice {
         return new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, ex.getMessage());
     }
 
-    @ExceptionHandler(NotFoundUserVkException.class)
-    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(VkException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleNotFound(Exception ex) {
-        return new ErrorResponse(HttpStatus.NOT_FOUND, ex.getMessage());
+        return new ErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 
     @ExceptionHandler(ConflictDataException.class)

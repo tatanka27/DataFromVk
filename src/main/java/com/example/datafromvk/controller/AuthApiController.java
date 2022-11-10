@@ -24,7 +24,7 @@ public class AuthApiController {
     private JwtTokenUtil jwtTokenUtil;
     private AuthenticationManager authenticationManager;
 
-    @PostMapping("/login")
+    @PostMapping(path = "/login", produces="application/json")
     @ResponseStatus(HttpStatus.OK)
     @Operation(summary = "login")
     public LoginResponse login(@Valid @RequestBody LoginRequest loginRequest) {

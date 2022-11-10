@@ -17,6 +17,6 @@ public class RegisterRequest {
     String username;
 
     @NotBlank
-    @Size(min = 6)
+    @Size(min = 6, max = 30)
     String password;
 }

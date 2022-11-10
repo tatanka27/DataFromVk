@@ -3,6 +3,7 @@ package com.example.datafromvk.controller;
 import com.example.datafromvk.model.request.UserVkRequest;
 import com.example.datafromvk.model.response.DataUserVkResponse;
 import com.example.datafromvk.service.DataVkService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +20,10 @@ public class DataVkController {
 
     private DataVkService dataVkService;
 
-    @GetMapping("/user_vk")
+    @GetMapping(path = "/user_vk", produces="application/json")
     @Operation(summary = "get by user_id and group_id data from vk")
     public DataUserVkResponse getDataUserVk(@RequestHeader(name = "vk_service_token") String vkServiceToken,
-                                            @Valid @RequestBody UserVkRequest request) {
+                                            @Valid @RequestBody UserVkRequest request) throws JsonProcessingException {
         return dataVkService.getDataUserVk(vkServiceToken, request.getUserId(), request.getGroupId());
     }
 }

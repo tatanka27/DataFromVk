@@ -1,9 +1,9 @@
 package com.example.datafromvk.service;
 
-import com.example.datafromvk.exception.BadVkServiceTokenException;
-import com.example.datafromvk.exception.NotFoundUserVkException;
+import com.example.datafromvk.exception.VkException;
 import com.example.datafromvk.model.dto.UserVk;
 import com.example.datafromvk.model.response.DataUserVkResponse;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -39,7 +39,7 @@ public class DataVkServiceTest {
             true);
 
     @Test
-    void shouldReturnDataUser() {
+    void shouldReturnDataUser() throws JsonProcessingException {
         when(vkService.getFio(anyString(), anyString())).thenReturn(userVk);
         when(vkService.isGroupMember(anyString(), anyInt(), anyString())).thenReturn(true);
 
@@ -52,28 +52,42 @@ public class DataVkServiceTest {
     }
 
     @Test
-    void shouldThrow_ifBadToken() {
+    void shouldThrow_ifBadToken() throws JsonProcessingException {
 
-        when(vkService.getFio(anyString(), anyString())).thenThrow(new BadVkServiceTokenException("Bad vk_service_token"));
+        when(vkService.getFio(anyString(), anyString())).thenThrow(new VkException("vk.com: access_token invalid or not passed"));
 
-        BadVkServiceTokenException thrown = assertThrows(
-                BadVkServiceTokenException.class,
+        VkException thrown = assertThrows(
+                VkException.class,
                 () -> dataVkService.getDataUserVk(tokenTest, userIdTest, groupIdTest)
         );
 
-        assertTrue(thrown.getMessage().contains("Bad vk_service_token"));
+        assertTrue(thrown.getMessage().contains("vk.com: access_token invalid or not passed"));
     }
 
     @Test
-    void shouldThrow_ifUserNotFound() {
+    void shouldThrow_ifUserNotFound() throws JsonProcessingException {
 
-        when(vkService.getFio(anyString(), anyString())).thenThrow(new NotFoundUserVkException(String.format("User with id=%s not found", userIdTest)));
+        when(vkService.getFio(anyString(), anyString())).thenThrow(new VkException(String.format("User with id=%s not found", userIdTest)));
 
-        NotFoundUserVkException thrown = assertThrows(
-                NotFoundUserVkException.class,
+        VkException thrown = assertThrows(
+                VkException.class,
                 () -> dataVkService.getDataUserVk(tokenTest, userIdTest, groupIdTest)
         );
 
         assertTrue(thrown.getMessage().contains(String.format("User with id=%s not found", userIdTest)));
+    }
+
+    @Test
+    void shouldThrow_ifGroupAccessDenied() throws JsonProcessingException {
+
+        when(vkService.getFio(anyString(), anyString())).thenReturn(userVk);
+        when(vkService.isGroupMember(anyString(), anyInt(), anyString())).thenThrow(new VkException("Access denied"));
+
+        VkException thrown = assertThrows(
+                VkException.class,
+                () -> dataVkService.getDataUserVk(tokenTest, userIdTest, groupIdTest)
+        );
+
+        assertTrue(thrown.getMessage().contains("Access denied"));
     }
 }

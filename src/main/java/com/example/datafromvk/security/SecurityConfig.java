@@ -23,8 +23,6 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
     private JwtAuthEntryPoint authEntryPoint;
 
-//    private UserDetailsServiceApi userDetailsServiceApi;
-
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
