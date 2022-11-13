@@ -12,11 +12,26 @@ services:
     ports:
       - "5432:5432"
 
-  postgres-test:
-    image: postgres:13.3
+#  postgres-test:
+#    image: postgres:13.3
+#    environment:
+#      POSTGRES_DB: "data_from_vk_test"
+#      POSTGRES_USER: "user"
+#      POSTGRES_PASSWORD: "user"
+#    ports:
+#      - "5433:5432"
+
+  app:
+    depends_on:
+      - postgres
+    build: .
+    image: tatanka27/datafromvk
+    container_name: datafromvk
+    restart: always
     environment:
-      POSTGRES_DB: "data_from_vk_test"
-      POSTGRES_USER: "user"
-      POSTGRES_PASSWORD: "user"
+      SPRING_PROFILES_ACTIVE: default
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/data_from_vk
+      SPRING_DATASOURCE_USER: user
+      SPRING_DATASOURCE_PASSWORD: user
     ports:
-      - "5433:5432"
+      - 8080:8080
