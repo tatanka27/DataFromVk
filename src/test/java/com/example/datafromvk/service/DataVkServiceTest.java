@@ -35,6 +35,7 @@ public class DataVkServiceTest {
     private final String userIdTest = "user";
 
     private final String groupIdTest = "group";
+
     DataUserVkResponse vkResponse = new DataUserVkResponse(userVk.getLastName(), userVk.getFirstName(), userVk.getMiddleName(),
             true);
 

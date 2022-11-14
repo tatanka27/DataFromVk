@@ -9,7 +9,6 @@ spring:
         database-platform: org.hibernate.dialect.PostgreSQL10Dialect
     security:
         jwt-secret : secretkey
-        jwt-issuer : vk.com
 
 springdoc:
     api-docs:

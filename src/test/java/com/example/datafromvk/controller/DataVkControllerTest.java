@@ -7,8 +7,10 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 
@@ -18,6 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @AutoConfigureMockMvc
+@TestPropertySource(locations = {"/.env"})
 public class DataVkControllerTest {
     @Autowired
     private MockMvc mockMvc;
@@ -25,11 +28,16 @@ public class DataVkControllerTest {
     private UserRepository userRepository;
 
     private final String loginJson = "{\"username\":\"%s\", \"password\": \"%s\"}";
+
     private final String userVkJson = "{\"user_id\":\"%s\", \"group_id\": \"%s\"}";
 
-    private final String vkServiceToken = "22bfea6422bfea6422bfea641721aeb7f9222bf22bfea6441d7360cf3972e7d57bf5a25";
+    private final String vkServiceToken;
 
     private String jwtToken;
+
+    public DataVkControllerTest(@Value("${vk-access-token}") String vkServiceToken) {
+        this.vkServiceToken = vkServiceToken;
+    }
 
     @BeforeEach
     void init() throws Exception {

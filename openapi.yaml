@@ -1,0 +1,198 @@
+openapi: 3.0.1
+info:
+  title: DataFromVk
+  description: Get user data from VK
+  version: "1.0"
+paths:
+  /user/registration:
+    post:
+      tags:
+        - user-controller
+      summary: registration new user
+      operationId: create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ErrorResponse'
+                  - $ref: '#/components/schemas/ValidationErrorResponse'
+        '409':
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /login:
+    post:
+      tags:
+        - auth-api-controller
+      summary: login
+      operationId: login
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+        '400':
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ErrorResponse'
+                  - $ref: '#/components/schemas/ValidationErrorResponse'
+        '409':
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+  /user_vk:
+    get:
+      tags:
+        - data-vk-controller
+      summary: get by user_id and group_id data from vk
+      operationId: getDataUserVk
+      parameters:
+        - name: vk_service_token
+          in: header
+          required: true
+          schema:
+            type: string
+        - name: request
+          in: query
+          required: true
+          schema:
+            $ref: '#/components/schemas/UserVkRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DataUserVkResponse'
+        '400':
+          description: Bad Request
+          content:
+            '*/*':
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/ErrorResponse'
+                  - $ref: '#/components/schemas/ValidationErrorResponse'
+        '409':
+          description: Conflict
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '500':
+          description: Internal Server Error
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+components:
+  schemas:
+    ValidationErrorResponse:
+      type: object
+      properties:
+        violations:
+          type: array
+          items:
+            $ref: '#/components/schemas/Violation'
+    Violation:
+      type: object
+      properties:
+        fieldName:
+          type: string
+        message:
+          type: string
+    ErrorResponse:
+      type: object
+      properties:
+        code:
+          type: integer
+          format: int32
+        message:
+          type: string
+    RegisterRequest:
+      required:
+        - password
+        - username
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          maxLength: 30
+          minLength: 6
+          type: string
+    LoginRequest:
+      required:
+        - password
+        - username
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          maxLength: 30
+          minLength: 6
+          type: string
+    LoginResponse:
+      type: object
+      properties:
+        token:
+          type: string
+    UserVkRequest:
+      required:
+        - group_id
+        - user_id
+      type: object
+      properties:
+        user_id:
+          type: string
+        group_id:
+          type: string
+    DataUserVkResponse:
+      type: object
+      properties:
+        last_name:
+          type: string
+        first_name:
+          type: string
+        middle_name:
+          type: string
+        member:
+          type: boolean

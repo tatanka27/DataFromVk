@@ -15,9 +15,6 @@ public class JwtTokenUtil {
     @Value("${spring.security.jwt-secret}")
     private String jwtSecret;
 
-    @Value("${spring.security.jwt-issuer}")
-    private String jwtIssuer;
-
     public static final long JWT_EXPIRATION = 5 * 60 * 60 * 1000;
 
     public String generateToken(Authentication authentication) {
